@@ -73,12 +73,16 @@ export const resolvers = {
       const { city, street, state, zipCode } = input;
       try {
         // 1. Call Weatherstack API to get current weather
-        const url = `${WEATHERSTACK_BASE_URL}?access_key=${
-          process.env.WEATHERSTACK_API_KEY
-        }&query=${encodeURIComponent(
+        const url = new URL(WEATHERSTACK_BASE_URL);
+        url.searchParams.append(
+          "access_key",
+          process.env.WEATHERSTACK_API_KEY ?? ""
+        );
+        url.searchParams.append(
+          "query",
           `${city}, ${state}, ${zipCode}, United States`
-        )}`;
-        const response = await axios.get(url);
+        );
+        const response = await axios.get(url.toString());
 
         if (response.data.error) {
           throw new Error(response.data.error.info);
