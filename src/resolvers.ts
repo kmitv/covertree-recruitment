@@ -104,8 +104,6 @@ export const resolvers = {
           })
           .select();
 
-        console.log("DUDUUD data, error", data, error);
-
         if (error) {
           throw new ApolloError(error.message);
         }
