@@ -124,9 +124,6 @@ export const resolvers = {
         throw new ApolloError(error.message);
       }
 
-      // If the row was successfully deleted, data should be an array with the deleted records.
-      // Return true if at least one record was deleted, false otherwise.
-      //   return data && data.length > 0;
       return data;
     }
   }
