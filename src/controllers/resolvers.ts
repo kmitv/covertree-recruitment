@@ -1,7 +1,7 @@
 import { supabase } from "./supabaseClient";
 import axios from "axios";
 import { ApolloError } from "apollo-server";
-import { ERROR_MESSAGES } from "./messages/errors";
+import { ERROR_MESSAGES } from "../messages/errors";
 
 interface CreatePropertyInput {
   city: string;

@@ -7,11 +7,11 @@ import dotenv from "dotenv";
 dotenv.config(); // Load .env (Supabase & Weatherstack credentials)
 
 // Our real Supabase client (no mocks):
-import { supabase } from "../src/supabaseClient";
+import { supabase } from "../src/controllers/supabaseClient";
 
 // Schema & resolvers that implement all user stories:
-import { typeDefs } from "../src/schema";
-import { resolvers } from "../src/resolvers";
+import { typeDefs } from "../src/models/schema";
+import { resolvers } from "../src/controllers/resolvers";
 
 describe("Full Integration Tests - No Mocks (Supabase + Weatherstack)", () => {
   let server: ApolloServer;
