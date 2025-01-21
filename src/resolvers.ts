@@ -1,6 +1,7 @@
 import { supabase } from "./supabaseClient";
 import axios from "axios";
 import { ApolloError } from "apollo-server";
+import { ERROR_MESSAGES } from "./messages/errors";
 
 interface CreatePropertyInput {
   city: string;
@@ -11,6 +12,29 @@ interface CreatePropertyInput {
 
 const WEATHERSTACK_BASE_URL = "http://api.weatherstack.com/current";
 
+const fetchWeatherData = async (
+  city: string,
+  state: string,
+  zipCode: string
+) => {
+  const url = new URL(WEATHERSTACK_BASE_URL);
+  url.searchParams.append("access_key", process.env.WEATHERSTACK_API_KEY ?? "");
+  url.searchParams.append(
+    "query",
+    `${city}, ${state}, ${zipCode}, United States`
+  );
+
+  const response = await axios.get(url.toString());
+
+  if (response.data.error) {
+    throw new Error(
+      `${ERROR_MESSAGES.WEATHER_API}: ${response.data.error.info}`
+    );
+  }
+
+  return response.data;
+};
+
 export const resolvers = {
   Query: {
     properties: async (
@@ -19,35 +43,31 @@ export const resolvers = {
     ) => {
       const { city, state, zipCode, sort } = args;
 
-      let query = supabase.from("properties").select("*");
+      try {
+        let query = supabase.from("properties").select("*");
 
-      // Optional filtering
-      if (city) {
-        query = query.ilike("city", city);
-      }
-      if (state) {
-        query = query.ilike("state", state);
-      }
-      if (zipCode) {
-        query = query.ilike("zipCode", zipCode);
-      }
+        if (city) query = query.ilike("city", city);
+        if (state) query = query.ilike("state", state);
+        if (zipCode) query = query.ilike("zipCode", zipCode);
 
-      // Optional sorting by created_at
-      if (
-        sort &&
-        (sort.toLowerCase() === "asc" || sort.toLowerCase() === "desc")
-      ) {
-        query = query.order("created_at", {
-          ascending: sort.toLowerCase() === "asc"
-        });
-      }
+        if (sort && ["asc", "desc"].includes(sort.toLowerCase())) {
+          query = query.order("created_at", {
+            ascending: sort.toLowerCase() === "asc"
+          });
+        }
 
-      const { data, error } = await query;
-      if (error) {
-        throw new ApolloError(error.message);
-      }
+        const { data, error } = await query;
 
-      return data;
+        if (error) {
+          throw new ApolloError(
+            `${ERROR_MESSAGES.FETCH_PROPERTIES}: ${error.message}`
+          );
+        }
+
+        return data;
+      } catch (error) {
+        throw new ApolloError(`${ERROR_MESSAGES.FETCH_PROPERTIES}.`);
+      }
     },
 
     property: async (_: any, args: { id: string }) => {
@@ -58,7 +78,9 @@ export const resolvers = {
         .single();
 
       if (error) {
-        throw new ApolloError(error.message);
+        throw new ApolloError(
+          `${ERROR_MESSAGES.FETCH_PROPERTY}: ${error.message}`
+        );
       }
 
       return data;
@@ -72,29 +94,11 @@ export const resolvers = {
     ) => {
       const { city, street, state, zipCode } = input;
       try {
-        // 1. Call Weatherstack API to get current weather
-        const url = new URL(WEATHERSTACK_BASE_URL);
-        url.searchParams.append(
-          "access_key",
-          process.env.WEATHERSTACK_API_KEY ?? ""
-        );
-        url.searchParams.append(
-          "query",
-          `${city}, ${state}, ${zipCode}, United States`
-        );
-        const response = await axios.get(url.toString());
-
-        if (response.data.error) {
-          throw new Error(response.data.error.info);
-        }
-
-        const { current, location } = response.data;
-        // Weatherstack location typically includes lat/lon
-        // If your plan doesn't provide lat/long, you'd need a separate geocoding step.
+        const weatherData = await fetchWeatherData(city, state, zipCode);
+        const { current, location } = weatherData;
         const lat = location?.lat;
         const long = location?.lon;
 
-        // 2. Insert into Supabase
         const { data, error } = await supabase
           .from("properties")
           .insert({
@@ -109,26 +113,38 @@ export const resolvers = {
           .select();
 
         if (error) {
-          throw new ApolloError(error.message);
+          throw new ApolloError(
+            `${ERROR_MESSAGES.CREATE_PROPERTY}: ${error.message}`
+          );
         }
 
         return data[0];
       } catch (err: any) {
-        throw new ApolloError(err.message);
+        throw new ApolloError(
+          `${ERROR_MESSAGES.CREATE_PROPERTY}: ${err.message}`
+        );
       }
     },
 
     deleteProperty: async (_: any, { id }: { id: string }) => {
-      const { data, error } = await supabase
-        .from("properties")
-        .delete()
-        .eq("id", id);
+      try {
+        const { data, error } = await supabase
+          .from("properties")
+          .delete()
+          .eq("id", id);
 
-      if (error) {
-        throw new ApolloError(error.message);
+        if (error) {
+          throw new ApolloError(
+            `${ERROR_MESSAGES.DELETE_PROPERTY}: ${error.message}`
+          );
+        }
+
+        return data;
+      } catch (err: any) {
+        throw new ApolloError(
+          `${ERROR_MESSAGES.DELETE_PROPERTY}: ${err.message}`
+        );
       }
-
-      return data;
     }
   }
 };
