@@ -69,7 +69,7 @@ Please note that there is a deprecation warning related to Apollo Server. For mo
 
 1. Clone the repository:
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/kmitv/covertree-recruitment/
     cd covertree-api
     ```
 
