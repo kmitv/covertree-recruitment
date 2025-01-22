@@ -31,6 +31,11 @@ Testing is a crucial part of the development process to ensure the functionality
     npm run test
     ```
 
+
+### Deprecation Warning
+
+Please note that there is a deprecation warning related to Apollo Server. For more details, refer to the [Apollo Server issue #7885](https://github.com/apollographql/apollo-server/issues/7885).
+
 ## Tech Stack
 
 - **Node.js (22.1.0)**: JavaScript runtime environment (I specifically used Bun during development)
