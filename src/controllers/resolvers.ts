@@ -1,5 +1,4 @@
 import { supabase } from "./supabase-client";
-import axios from "axios";
 import { ApolloError } from "apollo-server";
 import { ERROR_MESSAGES } from "../messages/errors";
 import { fetchWeatherData } from "../services/weatherstack";
@@ -14,7 +13,7 @@ interface CreatePropertyInput {
 export const resolvers = {
   Query: {
     properties: async (
-      _: any,
+      _: never,
       args: { city?: string; state?: string; zipCode?: string; sort?: string }
     ) => {
       const { city, state, zipCode, sort } = args;
@@ -41,12 +40,12 @@ export const resolvers = {
         }
 
         return data;
-      } catch (error) {
+      } catch {
         throw new ApolloError(`${ERROR_MESSAGES.FETCH_PROPERTIES}.`);
       }
     },
 
-    property: async (_: any, args: { id: string }) => {
+    property: async (_: never, args: { id: string }) => {
       const { data, error } = await supabase
         .from("properties")
         .select("*")
@@ -65,7 +64,7 @@ export const resolvers = {
 
   Mutation: {
     createProperty: async (
-      _: any,
+      _: never,
       { input }: { input: CreatePropertyInput }
     ) => {
       const { city, street, state, zipCode } = input;
@@ -95,14 +94,16 @@ export const resolvers = {
         }
 
         return data[0];
-      } catch (err: any) {
+      } catch (err) {
         throw new ApolloError(
-          `${ERROR_MESSAGES.CREATE_PROPERTY}: ${err.message}`
+          `${ERROR_MESSAGES.CREATE_PROPERTY}: ${
+            err instanceof Error ? err.message : ERROR_MESSAGES.UNKOWN
+          }`
         );
       }
     },
 
-    deleteProperty: async (_: any, { id }: { id: string }) => {
+    deleteProperty: async (_: never, { id }: { id: string }) => {
       try {
         const { data, error } = await supabase
           .from("properties")
@@ -116,9 +117,11 @@ export const resolvers = {
         }
 
         return data;
-      } catch (err: any) {
+      } catch (err) {
         throw new ApolloError(
-          `${ERROR_MESSAGES.DELETE_PROPERTY}: ${err.message}`
+          `${ERROR_MESSAGES.DELETE_PROPERTY}: ${
+            err instanceof Error ? err.message : ERROR_MESSAGES.UNKOWN
+          }`
         );
       }
     }

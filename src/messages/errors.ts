@@ -4,5 +4,6 @@ export const ERROR_MESSAGES = {
   CREATE_PROPERTY: "Failed to create property",
   DELETE_PROPERTY: "Failed to delete property",
   WEATHER_API: "Failed to fetch weather data",
-  UNAUTHENTICATED: "User is not authenticated"
+  UNAUTHENTICATED: "User is not authenticated",
+  UNKOWN: "An unkown error occurred"
 };

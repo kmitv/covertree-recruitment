@@ -2,7 +2,21 @@
 
 ## Project Description
 
-This project is a back-end application that allows management of property records through a GraphQL API. During the creation of a property, an API call is made to the Weatherstack API to fetch the current weather for the property's location.
+The application is designed to manage property records through a GraphQL API. When a new property is created, the app makes an API call to the Weatherstack API to fetch the current weather data for the property's location. This weather data is then stored along with the property details in the Supabase database.
+
+### Solving the Problem
+
+The main challenge was to integrate multiple services (Weatherstack API and Supabase) and ensure seamless communication between them. Here's how the problem was solved:
+
+1. **GraphQL API**: A GraphQL API was implemented using Apollo Server to handle property management operations such as querying, adding, and deleting properties.
+
+2. **Weatherstack Integration**: During the creation of a property, an API call is made to the Weatherstack API to fetch the current weather data for the property's location. This data is then included in the property record.
+
+3. **Supabase Integration**: Supabase is used as the database to store property records. The app interacts with Supabase to perform CRUD operations on the property data.
+
+4. **Testing**: Jest is used as the testing framework to ensure the functionality of the API. Integration tests are written to verify the end-to-end functionality of the property management operations.
+
+5. **Linting**: ESLint is set up to maintain code quality and consistency. The project includes linting scripts to check and fix code style issues.
 
 ## Tech Stack
 
@@ -58,10 +72,15 @@ This project is a back-end application that allows management of property record
 
 4. Build and start the server:
     ```sh
-    npm build
+    npm run build
     ```
     ```sh
-    npm start
+    npm run start
+    ```
+
+5. To test the application:
+    ```sh
+    npm run test
     ```
 
 ## Example GraphQL Queries and Mutations
