@@ -20,11 +20,11 @@ The main challenge was to integrate multiple services (Weatherstack API and Supa
 
 ### Testing
 
-Testing is a crucial part of the development process to ensure the functionality and reliability of the application. The project uses Jest as the testing framework.
+The project uses Jest as the testing framework.
 
 - **Testing Database**: The tests assume the existence of a testing database. This database is populated with test data before each test run and cleared after the tests are completed. This ensures that each test runs in a clean environment and does not affect other tests.
 
-- **Integration Tests**: Integration tests were written and followed during the development process. These tests verify the end-to-end functionality of the property management operations, including querying, adding, and deleting properties.
+- **Integration Tests**: Integration tests were written and followed during the development process. These tests verify basic functionality of the property management operations, including querying, adding, and deleting properties.
 
 - **Running Tests**:
     ```sh
