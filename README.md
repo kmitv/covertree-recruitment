@@ -18,6 +18,19 @@ The main challenge was to integrate multiple services (Weatherstack API and Supa
 
 5. **Linting**: ESLint is set up to maintain code quality and consistency. The project includes linting scripts to check and fix code style issues.
 
+### Testing
+
+Testing is a crucial part of the development process to ensure the functionality and reliability of the application. The project uses Jest as the testing framework.
+
+- **Testing Database**: The tests assume the existence of a testing database. This database is populated with test data before each test run and cleared after the tests are completed. This ensures that each test runs in a clean environment and does not affect other tests.
+
+- **Integration Tests**: Integration tests were written and followed during the development process. These tests verify the end-to-end functionality of the property management operations, including querying, adding, and deleting properties.
+
+- **Running Tests**:
+    ```sh
+    npm run test
+    ```
+
 ## Tech Stack
 
 - **Node.js (22.1.0)**: JavaScript runtime environment (I specifically used Bun during development)
