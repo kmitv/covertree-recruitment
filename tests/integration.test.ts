@@ -3,6 +3,7 @@ import { supabase } from "../src/controllers/supabase-client";
 import { typeDefs } from "../src/models/schema";
 import { resolvers } from "../src/controllers/resolvers";
 import dotenv from "dotenv";
+import { Property } from "../src/models/types";
 
 dotenv.config();
 
@@ -191,7 +192,7 @@ describe("Full Integration Tests - No Mocks (Supabase + Weatherstack)", () => {
       const filtered = res.data?.properties;
 
       expect(filtered.length).toBeGreaterThanOrEqual(2);
-      filtered.forEach((p: any) => expect(p.state).toBe("AZ"));
+      filtered.forEach((p: Property) => expect(p.state).toBe("AZ"));
     });
   });
 
